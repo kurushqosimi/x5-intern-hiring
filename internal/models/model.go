@@ -8,3 +8,12 @@ type XLSXProcRes struct {
 	SkippedRows  int      `json:"skipped_rows"`
 	Errors       []string `json:"errors"`
 }
+
+const (
+	AppNew          = "NEW"
+	AppInReview     = "IN_REVIEW"
+	AppInviteQueued = "INVITE_QUEUED"
+	AppInvited      = "INVITED"
+	AppRejectQueued = "REJECT_QUEUED"
+	AppRejected     = "REJECTED"
+)

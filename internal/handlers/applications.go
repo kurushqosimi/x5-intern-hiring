@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/kurushqosimi/x5-intern-hiring/internal/custom_errors"
+	"go.uber.org/zap"
 	"net/http"
 	"strconv"
 	"strings"
@@ -70,6 +71,7 @@ func (h *Handler) ListApplications(ctx *gin.Context) {
 
 	res, err := h.service.ListApplications(ctx.Request.Context(), p)
 	if err != nil {
+		h.logger.Error("h.service.ListApplications: ", zap.Error(err))
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "внутренняя ошибка сервера"})
 		return
 	}

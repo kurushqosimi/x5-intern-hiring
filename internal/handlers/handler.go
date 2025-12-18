@@ -25,6 +25,8 @@ func NewHandler(logger *zap.Logger, service *services.Service) *Handler {
 const (
 	importsXLSX      = "/imports/xlsx"
 	applicationsList = "/applications"
+	inviteApps       = "/applications/invite"
+	rejectApps       = "/applications/reject"
 )
 
 func (h *Handler) InitRoutes() *gin.Engine {
@@ -36,6 +38,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	api := r.Group("/api/v1")
 	api.POST(importsXLSX, h.UploadXLSX)
 	api.GET(applicationsList, h.ListApplications)
+	api.POST(inviteApps, h.InviteApplications)
+	api.POST(rejectApps, h.RejectApplications)
 
 	return r
 }

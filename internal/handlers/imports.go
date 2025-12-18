@@ -18,7 +18,7 @@ func (h *Handler) UploadXLSX(ctx *gin.Context) {
 		return
 	}
 
-	procResult, err := h.service.ProcessXLSX(ctx, fileHeader)
+	procResult, err := h.service.ProcessXLSX(ctx.Request.Context(), fileHeader)
 	if err != nil {
 		h.logger.Error("h.service.ProcessXLSX: ", zap.Error(err))
 		switch {

@@ -29,6 +29,7 @@ func (s *Service) ProcessXLSX(ctx context.Context, fileHeader *multipart.FileHea
 
 	parsedRows, parsedErrors, err := s.parseXLSX(content)
 	if err != nil {
+		_ = s.repo.SetImportFailed(ctx, metadata.ImportID, models.FileFailed)
 		return nil, err
 	}
 	inserted, skipped, err := s.repo.InsertXLSXData(ctx, metadata.ImportID, parsedRows)
@@ -80,20 +81,22 @@ func (s *Service) readFile(fileHeader *multipart.FileHeader) (*models.FileMetaDa
 func (s *Service) parseXLSX(buf []byte) ([]models.ParsedRow, []string, error) {
 	xl, err := excelize.OpenReader(bytes.NewReader(buf))
 	if err != nil {
-		return nil, nil, fmt.Errorf("%v: %w", err, custom_errors.ErrInvalidXLSX)
+		return nil, nil, fmt.Errorf("%w: %v", custom_errors.ErrInvalidXLSX, err)
 	}
 	defer func() { _ = xl.Close() }()
 
 	sheet := xl.GetSheetName(0)
 	if sheet == "" {
-		return nil, nil, fmt.Errorf("%v: %w", err, custom_errors.ErrNoXLSXSheets)
+		return nil, nil, custom_errors.ErrNoXLSXSheets
 	}
 
 	rows, err := xl.GetRows(sheet)
-	if err != nil || len(rows) < 2 {
-		return nil, nil, fmt.Errorf("%v: %w", err, custom_errors.ErrNoXLSXData)
+	if err != nil {
+		return nil, nil, fmt.Errorf("%w: %v", custom_errors.ErrNoXLSXData, err)
 	}
-
+	if len(rows) < 2 {
+		return nil, nil, custom_errors.ErrNoXLSXData
+	}
 	header := rows[0]
 	col := indexColumns(header)
 
@@ -230,6 +233,9 @@ func parseAppliedAt(s string) (time.Time, error) {
 	// Подстрой под реальный формат в файле.
 	// Часто встречается: "02.01.2006 15:04" или "02.01.2006"
 	layouts := []string{
+		"2006-01-02 15:04:05",
+		"2006-01-02 15:04",
+		"2006-01-02",
 		"02.01.2006 15:04:05",
 		"02.01.2006 15:04",
 		"02.01.2006",

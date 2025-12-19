@@ -6,11 +6,6 @@ type BulkEmailActionRequest struct {
 	StatusReason   string   `json:"status_reason,omitempty"` // актуально для reject
 }
 
-type ActionItemError struct {
-	ApplicationID string `json:"application_id"`
-	Error         string `json:"error"`
-}
-
 type BulkEmailActionResponse struct {
 	Queued  int               `json:"queued"`
 	Skipped int               `json:"skipped"`

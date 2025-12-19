@@ -17,3 +17,13 @@ const (
 	AppRejectQueued = "REJECT_QUEUED"
 	AppRejected     = "REJECTED"
 )
+
+type ActionItemError struct {
+	ApplicationID string `json:"application_id"`
+	Error         string `json:"error"`
+}
+
+const (
+	AppCRMQueued = "CRM_QUEUED"
+	AppCRMSynced = "CRM_SYNCED"
+)

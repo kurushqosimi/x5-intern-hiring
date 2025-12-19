@@ -27,6 +27,7 @@ const (
 	applicationsList = "/applications"
 	inviteApps       = "/applications/invite"
 	rejectApps       = "/applications/reject"
+	crmQueue         = "/applications/crm/queue"
 )
 
 func (h *Handler) InitRoutes() *gin.Engine {
@@ -40,6 +41,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	api.GET(applicationsList, h.ListApplications)
 	api.POST(inviteApps, h.InviteApplications)
 	api.POST(rejectApps, h.RejectApplications)
+	api.POST(crmQueue, h.QueueApplicationsToCRM)
 
 	return r
 }
